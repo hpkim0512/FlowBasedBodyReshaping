@@ -10,7 +10,7 @@ divider = 20
 reshape_ckpt_path = 'models/body_reshape_model.pth'
 
 
-src_dir = './test_cases_hp'
+src_dir = '/data/samples'
 gt_dir = 'null'
 save_dir = 'test_cases_output_hp'
 

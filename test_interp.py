@@ -33,7 +33,7 @@ def recurve_search(root_path, all_paths, suffix=[]):
 if __name__ == "__main__":
     timestamp = time.strftime("%Y%m%d-%H%M%S", time.localtime())
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, default='config/test_cvpr_setting.toml', required=True)
+    parser.add_argument('--config', type=str, default='config/test_hp_setting.toml')
     args = parser.parse_args()
 
     with open(args.config) as f:
@@ -83,7 +83,6 @@ if __name__ == "__main__":
 
     bad_sample = []
 
-    
 
     pbar = tqdm.tqdm(img_list)
     for src_path in pbar:
@@ -117,40 +116,8 @@ if __name__ == "__main__":
 
             info = ""
 
-            # if gt is not None:
-            #     if gt.shape[:2] != src_img.shape[:2]:
-            #         gt = cv2.resize(gt,(src_img.shape[1], src_img.shape[0]),interpolation=cv2.INTER_LINEAR)
-
-            #     src_rgb = src_img[:,:,::-1]
-            #     gt_rgb = gt[:,:,::-1]
-
-            #     pred_rgb = pred[:,:,::-1]
-
-            #     t2 = time.time()
-            #     psnr_value = psnr(pred_rgb, gt_rgb)
-            #     src_psnr_value = psnr(src_rgb, gt_rgb)
-
-
-            #     t2 = time.time()
-            #     lpips_value, ssim_value = cal_lpips_and_ssim(pred_rgb,gt_rgb)
-            #     src_lpips_value, src_ssim_value = cal_lpips_and_ssim(src_rgb, gt_rgb)
-
-            #     lpips_list.append(lpips_value)
-            #     ssim_list.append(ssim_value)
-            #     psnr_list.append(psnr_value)
-
-            #     src_lpips_list.append(src_lpips_value)
-            #     src_ssim_list.append(src_ssim_value)
-            #     src_psnr_list.append(src_psnr_value)
-
-            #     pbar.set_description(info + "pred ssim:{:.4},psnr:{:.4},lpips:{:.4}".format(np.mean(ssim_list),np.mean(psnr_list),np.mean(lpips_list)) + "|src ssim:{:.4},psnr:{:.4},lpips:{:.4}".format(np.mean(src_ssim_list), np.mean(src_psnr_list),
-            #                                                                         np.mean(src_lpips_list)))
-
             output_path = os.path.join(TESTCONFIG.save_dir, base + "_warp_{:02d}_{:.1f}.jpg".format(i, degree))
             cv2.imwrite(output_path, pred)
-            
-            # if gt is not None:
-            #     cv2.imwrite(os.path.join(TESTCONFIG.save_dir, base + "_gt.jpg"), gt)
 
             path_pairs = []
 
@@ -177,27 +144,6 @@ if __name__ == "__main__":
                     if os.path.exists(src_path):
                         os.rename(src_path, dst_path)
                         shutil.move(dst_path, TESTCONFIG.save_dir)
-
-    # if gt is not None:
-    #     print(f"val count:{len(psnr_list)}")
-    #     print(f"pred mean ssim:{np.mean(ssim_list)}")
-    #     print(f"pred mean psnr:{np.mean(psnr_list)}")
-    #     print(f"pred mean lpips:{np.mean(lpips_list)}")
-
-    #     print(f"src mean ssim:{np.mean(src_ssim_list)}")
-    #     print(f"src mean psnr:{np.mean(src_psnr_list)}")
-    #     print(f"src mean lpips:{np.mean(src_lpips_list)}")
-    #     print(f"bad sample count:{len(bad_sample)}")
-    #     print(f"bad samples:{bad_sample}")
-
-    #     cur_time =timestamp
-    #     print(cur_time)
-    #     with open("record_{}_weight_{}.txt".format(cur_time, os.path.basename(TESTCONFIG.reshape_ckpt_path).split('.')[0]),"w") as f:
-    #             f.write("time:{}\n".format(timestamp))
-    #             f.write("count :{}\n".format(len(ssim_list)))
-    #             f.write("ssim of pred/gt :{}\n".format(np.mean(ssim_list)))
-    #             f.write("psnr of pred/gt :{}\n".format(np.mean(psnr_list)))
-    #             f.write("lpips of pred/gt :{}\n".format(np.mean(lpips_list)))
 
     BodyRetoucher.release()
     print('all done')
