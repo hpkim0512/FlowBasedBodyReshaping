@@ -174,10 +174,10 @@ class BodyRetoucher(object):
                                       person_pred['rDy'],
                                       0, 0, person_pred['multi_bbox'])
 
-            cv2.imwrite('x_fusion_map_{}.jpg'.format(1), person_pred['x_fusion_map'] * 255)
-            cv2.imwrite('y_fusion_map_{}.jpg'.format(1), person_pred['y_fusion_map'] * 255)
-            cv2.imwrite('flow_{}.jpg'.format(1), visual['flow'])
-            cv2.imwrite('pred_{}.jpg'.format(1), visual['pred'])
+            cv2.imwrite('x_fusion_map.jpg', person_pred['x_fusion_map'] * 255)
+            cv2.imwrite('y_fusion_map.jpg', person_pred['y_fusion_map'] * 255)
+            cv2.imwrite('flow.jpg', visual['flow'])
+            cv2.imwrite('pred.jpg', visual['pred'])
 
         return flow
 

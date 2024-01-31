@@ -46,7 +46,7 @@ if __name__ == "__main__":
                              pose_estimation_ckpt=TESTCONFIG.pose_estimation_ckpt,
                              device=0, log_level='error',
                              log_path='test_log.txt',
-                             debug_level=0)
+                             debug_level=1)
     if ret == 0:
         print('init done')
     else:

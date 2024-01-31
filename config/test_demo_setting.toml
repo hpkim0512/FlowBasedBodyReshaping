@@ -3,7 +3,7 @@ degree = 1.0
 
 suppress_bg = false
 
-flow_scales = ['upper_2']
+flow_scales = ['upper_0.2']
 
 divider = 20
 
@@ -12,5 +12,5 @@ reshape_ckpt_path = 'models/body_reshape_model.pth'
 
 src_dir = './test_cases'
 gt_dir = 'null'
-save_dir = 'test_cases_output'
+save_dir = 'test_cases_output_1.0_upper0.5'
 
