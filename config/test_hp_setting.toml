@@ -1,0 +1,16 @@
+
+degree = 1.0
+
+suppress_bg = true
+
+flow_scales = ['upper_0.2', 'lower_0.2', 'upper_2']
+
+divider = 20
+
+reshape_ckpt_path = 'models/body_reshape_model.pth'
+
+
+src_dir = './test_cases_hp'
+gt_dir = 'null'
+save_dir = 'test_cases_output_hp'
+

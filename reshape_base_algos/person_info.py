@@ -66,16 +66,22 @@ class PersonInfo(object):
     
 
             self.human_joint_box = self.__joint_to_body_box()
+            print('    [] human_joint_box:', self.human_joint_box)
 
             self.human_box = enlarge_box_tblr(self.human_joint_box, pad_img, ratio=0.25)
+            print('    [] human_box:', self.human_box)
             human_box_height = self.human_box[1] - self.human_box[0]
             human_box_width = self.human_box[3] - self.human_box[2]
 
             self.leg_joint_box = self.__joint_to_leg_box()
+            print('    [] leg_joint_box:', self.leg_joint_box)
             self.leg_box = enlarge_box_tblr(self.leg_joint_box, pad_img, ratio=0.25)
+            print('    [] leg_box:', self.leg_box)
 
             self.arm_joint_box = self.__joint_to_arm_box()
+            print('    [] arm_joint_box:', self.arm_joint_box)
             self.arm_box = enlarge_box_tblr(self.arm_joint_box, pad_img, ratio=0.1)
+            print('    [] arm_box:', self.arm_box)
 
             x_flows = []
             y_flows = []
@@ -101,7 +107,9 @@ class PersonInfo(object):
                 if arm_box_width < human_box_width * 0.1 or arm_box_height < human_box_height * 0.1:
                     roi_bbox = self.human_box
                 else:
+                    print('    [] arm_box1:', arm_box)
                     arm_box = enlarge_box_tblr(arm_box, pad_img, ratio=scale_value)
+                    print('    [] arm_box2:', arm_box)
                     if scale == 'upper_0.2':
                         arm_box[0] = min(arm_box[0], int(self.joints[0][1]))
                     if scale.startswith('upper'):
@@ -117,6 +125,7 @@ class PersonInfo(object):
     
                         if roi_bbox[1] - roi_bbox[0] < 1 or roi_bbox[3] - roi_bbox[2] < 1:
                             continue
+                print('    [] roi_bbox:', roi_bbox)
                 self._logger.logger.info('time of gen roi_bbox: {}ms'.format(int((time.time() - t1) * 1000)))
                 
                 self._logger.logger.info('scale:{},roi_bbox:{}'.format(scale,roi_bbox))
@@ -251,21 +260,32 @@ class PersonInfo(object):
 
             return {'rDx': origin_rDx,'rDy': origin_rDy,"multi_bbox":multi_bbox, 'x_fusion_map':x_fusion_map, 'y_fusion_map':y_fusion_map}
  
-    def visualize(self, img, origin_rDx, origin_rDy,width_expand,height_expand,multi_bbox,  transRatio = 1.0):
+    def visualize(self, img, origin_rDx, origin_rDy, width_expand, height_expand, multi_bbox, transRatio = 1.0, alpha=0.7):
         flow_field_val_vis = visualize_flow(np.dstack((origin_rDx, origin_rDy))) * 255
 
         pad_img = cv2.copyMakeBorder(img, height_expand, height_expand, width_expand, width_expand,
                                      cv2.BORDER_CONSTANT, value=(127, 127, 127))
         
-        pred  = image_warp_grid1( origin_rDx, origin_rDy, pad_img, transRatio, width_expand, height_expand)
+        pred  = image_warp_grid1(origin_rDx, origin_rDy, pad_img, transRatio, width_expand, height_expand)
 
-        flow_field_val_vis = flow_field_val_vis * 0.45 + pad_img * 0.55
+        flow_field_val_vis = flow_field_val_vis * alpha + pad_img * (1-alpha)
 
-        plot_one_box([self.human_box[2], self.human_box[0],self.human_box[3], self.human_box[1]], flow_field_val_vis,  (0, 0, 255),
-                     label="human_box", line_thickness=3)
+        plot_one_box(
+            [self.human_box[2], self.human_box[0],self.human_box[3], self.human_box[1]],
+            flow_field_val_vis,
+            (0, 0, 255),
+            label="human_box",
+            line_thickness=3
+        )
   
         for i, roi_bbox in enumerate(multi_bbox):
-            plot_one_box([roi_bbox[2], roi_bbox[0],roi_bbox[3], roi_bbox[1] ],flow_field_val_vis,(255, 0, 0),label=f"{i}",line_thickness=1)
+            plot_one_box(
+                [roi_bbox[2], roi_bbox[0],roi_bbox[3], roi_bbox[1] ],
+                flow_field_val_vis,
+                (255, 0, 0),
+                label=f"{i}",
+                line_thickness=1
+            )
 
         color = np.random.randint(0, 255, size=3)
         color = [int(i) for i in color]
